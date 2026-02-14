@@ -542,7 +542,7 @@ void DShowInput::OnVideoData(const VideoConfig &config, unsigned char *data, siz
 	const int cx = config.cx;
 	const int cy_abs = config.cy_abs;
 
-	frame.timestamp = (uint64_t)startTime * 100;
+	frame.timestamp = (uint64_t)startTime;
 	frame.width = config.cx;
 	frame.height = cy_abs;
 	frame.format = ConvertVideoFormat(config.format);
@@ -625,7 +625,7 @@ void DShowInput::OnEncodedAudioData(enum AVCodecID id, unsigned char *data, size
 		}
 
 		if (got_output) {
-			audio.timestamp = (uint64_t)ts * 100;
+			audio.timestamp = (uint64_t)ts;
 #if LOG_ENCODED_AUDIO_TS
 			blog(LOG_DEBUG, "audio ts: %llu", audio.timestamp);
 #endif
@@ -665,7 +665,7 @@ void DShowInput::OnAudioData(const AudioConfig &config, unsigned char *data, siz
 	block_size = get_audio_bytes_per_channel(audio.format) * get_audio_channels(audio.speakers);
 
 	audio.frames = (uint32_t)(size / block_size);
-	audio.timestamp = (uint64_t)startTime * 100;
+	audio.timestamp = (uint64_t)startTime;
 
 	if (audio.format != AUDIO_FORMAT_UNKNOWN)
 		obs_source_output_audio(source, &audio);
@@ -953,7 +953,7 @@ bool DShowInput::UpdateVideoConfig(obs_data_t *settings)
 	double fps = 0.0;
 
 	if (videoConfig.frameInterval)
-		fps = 10000000.0 / double(videoConfig.frameInterval);
+		fps = 1000000000.0 / double(videoConfig.frameInterval);
 
 	BPtr<char> name_utf8;
 	BPtr<char> path_utf8;
@@ -1597,7 +1597,8 @@ static DStr GetFPSName(long long interval)
 		return name;
 	}
 
-	dstr_cat(name, to_string(10000000. / interval).c_str());
+	dstr_cat(name, to_string(1000000000. / interval).c_str());
+	
 	return name;
 }
 

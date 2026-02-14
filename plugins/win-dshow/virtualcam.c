@@ -41,8 +41,9 @@ static bool virtualcam_start(void *data)
 	struct obs_video_info ovi;
 	obs_get_video_info(&ovi);
 
-	uint64_t interval = ovi.fps_den * 10000000ULL / ovi.fps_num;
-
+        // Calculate frame interval in nanoseconds, consistent with OBS internal rendering
+        uint64_t interval = util_mul_div64(1000000000ULL, ovi.fps_den, ovi.fps_num);
+	
 	char res[64];
 	snprintf(res, sizeof(res), "%dx%dx%lld", (int)width, (int)height, (long long)interval);
 

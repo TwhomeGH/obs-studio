@@ -105,7 +105,8 @@ inline bool DShowEncoder::Update(obs_data_t *settings)
 
 	int keyint = keyint_sec * voi->fps_num / voi->fps_den;
 
-	frameInterval = voi->fps_den * 10000000 / voi->fps_num;
+	// Frame interval in nanoseconds, consistent with internal OBS rendering
+	frameInterval = util_mul_div64(1000000000ULL, voi->fps_den, voi->fps_num);
 
 	config.fpsNumerator = voi->fps_num;
 	config.fpsDenominator = voi->fps_den;
